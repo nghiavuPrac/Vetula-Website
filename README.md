@@ -2,6 +2,7 @@
 
 An app that allows you to add recipes from the dashboard. Then visitors can search and filter based on different categories.
 
+
 ---
 
 ### Screenshots
@@ -12,3 +13,7 @@ An app that allows you to add recipes from the dashboard. Then visitors can sear
 ---
 
 [Tutorial On Youtube](https://youtu.be/nPusaqAbiGE)
+
+459405N.ghia*1
+admin 
+pass: ATBBcphCRpf5DScdCktEtD3gt3Ae199C100E
