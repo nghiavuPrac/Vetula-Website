@@ -1,8 +1,32 @@
-# Recipe Search (Cooking Website Built With Django)
+# Vetula Website
 
-An app that allows you to add recipes from the dashboard. Then visitors can search and filter based on different categories.
+Django web app searching recipe base on ingredients
 
+---
 
+## Reference
+api searching
+https://github.com/SkyinScotlandCodes/searchproject-python/blob/main/add_ingredients.py 
+
+search with url
+https://github.com/SkyinScotlandCodes/searchproject-python/blob/main/searchproject.py 
+
+```
+url = f"https://api.edamam.com/search?q={inputIngredient}&cuisineType={inputCuisineType}&{includeAppId}&{includeAppKey}&from={startPagination}&to={endPagination}"
+print(f"Showing recipe results from {startPagination} to {endPagination}")
+r = requests.get(url)
+```
+
+---
+## Prerequisite
+- dev-env: python 3.11
+- edamam aplication api: https://developer.edamam.com/admin/applications
+- create "./main/api_config.py" file and pass Application ID and key with the following line:
+    ```
+        # Replace <> with code on the above link
+        recipes_appid='<Application ID>'
+        recipes_appkey='<Application Keys>'    
+    ```
 ---
 
 ### Screenshots
@@ -14,6 +38,3 @@ An app that allows you to add recipes from the dashboard. Then visitors can sear
 
 [Tutorial On Youtube](https://youtu.be/nPusaqAbiGE)
 
-459405N.ghia*1
-admin 
-pass: ATBBcphCRpf5DScdCktEtD3gt3Ae199C100E
