@@ -39,10 +39,10 @@
                         <!-- Card content -->
                         <div class="card-body">
                            <!-- Title -->
-                           <a href="{{recipe.get_url}}" class="black-text">{{recipe.title}}</a>
+                           <a href="{{recipe.url}}" class="black-text">{{recipe.title}}</a>
                            <!-- Text -->
-                           <p class="card-title text-muted font-small mt-3 mb-2">{{recipe.description|safe|slice:":150"}}</p>
-                           <a type="button" class="btn btn-flat text-primary p-0 mx-0" href="{{recipe.get_url}}">Read more<i class="fa fa-angle-right ml-2"></i></a>
+                           <p class="card-title text-muted font-small mt-3 mb-2">{{recipe.describe|safe|slice:":150"}}</p>
+                           <a type="button" class="btn btn-flat text-primary p-0 mx-0" href="{{recipe.url}}">Read more<i class="fa fa-angle-right ml-2"></i></a>
                         </div>
                      </div>
                      <!-- Card -->
@@ -124,7 +124,7 @@
                         <a class="page-link" href="?{{topic}}=on&search={{query}}&page={{results.paginator.num_pages}}">Last</a>
                      </li>
                      {% else %}
-                     <li class="page-item clearfix d-none d-md-block disabled>
+                     <li class="page-item clearfix d-none d-md-block disabled">
                         <a class="page-link" href="#">Last</a>
                      </li>
                      {% endif %}
@@ -133,7 +133,7 @@
                <!-- Pagination -->
                
                <div class="text-center mt-5">
-                  <a href="#">Back Home</a>
+                  <a href="{% url 'home' %}">Back Home</a>
                </div>
             </section>
             <!--Section: Content-->
