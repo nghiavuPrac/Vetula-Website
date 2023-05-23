@@ -12,12 +12,60 @@
        min-height: 800px;
        }
     </style>
- 
+ <!-- thanhtam -->
+ <link rel="preconnect" href="https://cdnjs.cloudflare.com" />
+ <link
+   rel="stylesheet"
+   href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css"
+   integrity="sha512-xh6O/CkQoPOWDdYTDqeRdPCVd1SpvCA9XXcUnZS2FmJNp1coAFzvtCN9BmamE+4aHK8yyUHUSCcJHgXloTyT2A=="
+   crossorigin="anonymous"
+   referrerpolicy="no-referrer"
+ />
+ <link rel="shortcut icon" href="/static/css/img/your-logo.png" type="image/x-icon">
+ <link rel="stylesheet" href="/static/css/style.css">
+ <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@500&display=swap" rel="stylesheet">
+
+
+ <!-- thanhtam -->
    <body>
+<!-- thanhtam -->
+<div class="menu"  style="margin-bottom: 125px;">
+   <!-- logo -->
+   <div class="menu-item" style="float: left; color: white; display: block; margin-left: 50px; margin-top: 15px;">
+     <p> VETULA</p>
+   </div>
+   <!-- Item 1 -->
+   <div class="menu-item">
+     <a href="#!">Home</a>
+   </div>
+
+   <!-- Item 2 -->
+   <div class="menu-item">
+     <a href="#!">Content</a>
+   </div>
+
+   <!-- Item 3 -->
+   <div class="menu-item">
+     <a href="#!">System</a>
+   </div>
+   <!-- dowload btn -->
+   <div class="btn-header">
+     <a href="">Account</a>
+   </div>
+   <div class="btn-header">
+      <a href="">Login</a>
+    </div>
+ </div>
+
+      <!-- thanhtam -->
+
+      
       <!-- Intro Section -->
       
       <div class="view jarallax" data-jarallax='{"speed": 0.2}'
-         style="background-image: url('https://cdn.pixabay.com/photo/2018/03/07/18/42/menu-3206749_960_720.jpg'); background-repeat: no-repeat; background-size: cover; background-position: center center;margin-top:-100px;">
+         style="background-image: url('https://cdn.pixabay.com/photo/2018/03/07/18/42/menu-3206749_960_720.jpg'); background-repeat: no-repeat; background-size: cover; background-position: center center;margin-top:-125px;">
          <div class="mask rgba-indigo-light">
             <div class="container h-100 d-flex justify-content-center align-items-center">
                <div class="row">
@@ -48,7 +96,7 @@
                                           <h5 class="mb-0">
                                              Advanced Search <i class="fas fa-angle-down rotate-icon"></i>
                                           </h5>
-                                          <small class="text-muted">Filter By Categories</small>
+                                          <small class="text-muted">Filter By Cuisine</small>
                                        </a>
                                     </div>
                                     <!-- Card body -->
@@ -56,36 +104,36 @@
                                        <div class="card-body">
                                           <!-- Material checked -->
                                           <div class="form-check form-check-inline">
-                                             <input type="radio" class="form-check-input" value="on" id="breakfast" name="breakfast">
+                                             <input type="checkbox" class="form-check-input" value="on" id="breakfast" name="breakfast">
                                              <label class="form-check-label" for="breakfast">Breakfast</label>
                                           </div>
                                           <div class="form-check form-check-inline">
-                                             <input type="radio" class="form-check-input" value="on" id="appetizers" name="appetizers">
+                                             <input type="checkbox" class="form-check-input" value="on" id="appetizers" name="appetizers">
                                              <label class="form-check-label" for="appetizers">Appetizers</label>
                                           </div>
                                           <div class="form-check form-check-inline">
-                                             <input type="radio" class="form-check-input" value="on" id="lunch" name="lunch">
+                                             <input type="checkbox" class="form-check-input" value="on" id="lunch" name="lunch">
                                              <label class="form-check-label" for="lunch">Lunch</label>
                                           </div>
                                           <div class="form-check form-check-inline">
-                                             <input type="radio" class="form-check-input" value="on" id="salads" name="salads">
+                                             <input type="checkbox" class="form-check-input" value="on" id="salads" name="salads">
                                              <label class="form-check-label" for="salads">Salads</label>
                                           </div>
                                           <div class="form-check form-check-inline">
-                                             <input type="radio" class="form-check-input" value="on" id="dinner" name="dinner">
+                                             <input type="checkbox" class="form-check-input" value="on" id="dinner" name="dinner">
                                              <label class="form-check-label" for="dinner">Dinner</label>
                                           </div>
                                           <div class="form-check form-check-inline">
-                                             <input type="radio" class="form-check-input" value="on" id="dessert" name="dessert">
+                                             <input type="checkbox" class="form-check-input" value="on" id="dessert" name="dessert">
                                              <label class="form-check-label" for="dessert">Dessert</label>
                                           </div>
                                           <div class="form-check form-check-inline">
-                                             <input type="radio" class="form-check-input" value="on" id="easy" name="easy">
+                                             <input type="checkbox" class="form-check-input" value="on" id="easy" name="easy">
                                              <label class="form-check-label" for="easy">Easy</label>
                                           </div>
                                           <div class="form-check form-check-inline">
-                                             <input type="radio" class="form-check-input" value="on" id="hard" name="hard">
-                                             <label class="form-check-labell" for="hard">Hard</label>
+                                             <input type="checkbox" class="form-check-input" value="on" id="hard" name="hard">
+                                             <label class="form-check-labell" for="hard" style="margin-bottom: 0.5px;">Hard</label>
                                           </div>
                                        </div>
                                     </div>
@@ -108,17 +156,6 @@
          </div>
       </div>
       </form>
-      <!-- Footer -->
-      <footer class="page-footer text-center text-md-left unique-color-dark pt-0">
-         <!-- Copyright -->
-         <div class="footer-copyright text-center py-3">
-            <div class="container-fluid">
-               © 2019 Copyright: <a href="https://www.fiverr.com/selmiabderrahim" target="_blank"> Selmi Abderrahim </a>
-            </div>
-         </div>
-         <!-- Copyright -->
-      </footer>
-      <!-- Footer -->
       {% include 'scripts.html' %}
       <script>
          // Animation init
