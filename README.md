@@ -1,14 +1,15 @@
 # Vetula Website
 
 Django web app searching recipe base on ingredients
+- Sound effect credit: Sound Effect by <a href="https://pixabay.com/users/soundsforyou-4861230/?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=127856">SoundsForYou</a> from <a href="https://pixabay.com/sound-effects//?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=127856">Pixabay</a> 
 
 ---
 
 ## Reference
-api searching
+- api searching
 https://github.com/SkyinScotlandCodes/searchproject-python/blob/main/add_ingredients.py 
 
-search with url
+- search with url
 https://github.com/SkyinScotlandCodes/searchproject-python/blob/main/searchproject.py 
 
 ```
@@ -16,6 +17,8 @@ url = f"https://api.edamam.com/search?q={inputIngredient}&cuisineType={inputCuis
 print(f"Showing recipe results from {startPagination} to {endPagination}")
 r = requests.get(url)
 ```
+
+[Tutorial On Youtube](https://youtu.be/nPusaqAbiGE)
 
 ---
 ## Prerequisite
@@ -29,12 +32,56 @@ r = requests.get(url)
     ```
 ---
 
-### Screenshots
-![](https://i.ibb.co/vmzxDqT/screencapture-127-0-0-1-8000-guacamole-3-2020-12-19-21-47-00.png)
-![](https://i.ibb.co/yNttGBq/screencapture-127-0-0-1-8000-search-2020-12-19-21-46-38.png)
-![](https://i.ibb.co/4F3Vz6s/screencapture-127-0-0-1-8000-2020-12-19-21-46-12.png)
+## Installation:
 
----
+Update pip:
+```
+    pip install --upgrade pip
+```
 
-[Tutorial On Youtube](https://youtu.be/nPusaqAbiGE)
+Create and start virtual environments:
+```
+    pip install virtualenv
+    python -m venv env
+    
+    # Windows activate
+    env\Scripts\activate
+    deactivate
+
+    # Linux activate
+    source env/bin/activate
+    deactivate
+```
+
+Installing required packages:
+```
+    pip install -r requirements.txt
+```
+
+DownLoad data
+```
+    python main/food_extraction/Utils.py download_data
+```
+
+Download 'punkt' - a nltk library
+```
+    python main/food_extraction/Utils.py download_punkt
+
+```
+
+
+# Test Food extraction 
+### From command line
+```    
+    $ # Entity extraction
+    python main/food_extraction/Ner.py "Today i have some beef, chicken and eggs, what i can do with it"
+    ['today', 'beef', 'chicken', 'eggs']
+```
+
+
+# Usage
+### From command line
+```    
+    python manage.py runserver
+```
 

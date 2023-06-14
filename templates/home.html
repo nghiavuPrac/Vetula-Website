@@ -3,67 +3,53 @@
    {% load static %}
 
    {% include 'head.html' %}
-    <style>
-       html,
-       body,
-       header,
-       .jarallax {
-       height: 1000px;
-       min-height: 800px;
-       }
-    </style>
- <!-- thanhtam -->
- <link rel="preconnect" href="https://cdnjs.cloudflare.com" />
- <link
-   rel="stylesheet"
-   href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css"
-   integrity="sha512-xh6O/CkQoPOWDdYTDqeRdPCVd1SpvCA9XXcUnZS2FmJNp1coAFzvtCN9BmamE+4aHK8yyUHUSCcJHgXloTyT2A=="
-   crossorigin="anonymous"
-   referrerpolicy="no-referrer"
- />
- <link rel="shortcut icon" href="/static/css/img/your-logo.png" type="image/x-icon">
- <link rel="stylesheet" href="/static/css/style.css">
- <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@500&display=swap" rel="stylesheet">
+   <style>
+      html,
+      body,
+      header,
+      .jarallax {
+      height: 1000px;
+      min-height: 800px;
+      }
+   </style>
 
-
- <!-- thanhtam -->
    <body>
-<!-- thanhtam -->
-<div class="menu"  style="margin-bottom: 125px;">
-   <!-- logo -->
-   <div class="menu-item" style="float: left; color: white; display: block; margin-left: 50px; margin-top: 15px;">
-     <p> VETULA</p>
-   </div>
-   <!-- Item 1 -->
-   <div class="menu-item">
-     <a href="#!">Home</a>
+   <!-- thanhtam -->
+   <div class="menu"  style="margin-bottom: 125px;">
+      <!-- logo -->
+      <div class="menu-item" style="float: left; color: white; display: block; margin-left: 50px; margin-top: 15px;">
+         <p> VETULA</p>
+      </div>
+      <!-- Item 1 -->
+      <div class="menu-item">
+         <a href="{% url 'home' %}">Home</a>
+      </div>
+
+      <!-- Item 2 -->
+      <div class="menu-item">
+         <a href="{% url 'user' %}">User</a>
+      </div>
+
+      <!-- Item 3 -->
+      <!-- <div class="menu-item">
+         <a href="#!">System</a>
+      </div> -->
+      <!-- dowload btn -->
+      {% if user.is_authenticated %}
+         <div class="btn-header">
+            <a href="{% url 'logout' %}">Logout</a>
+         </div>
+      {% else %}
+         <div class="btn-header">
+            <a href="{% url 'login' %}">Login</a>
+         </div>
+      {% endif %}
    </div>
 
-   <!-- Item 2 -->
-   <div class="menu-item">
-     <a href="#!">Content</a>
-   </div>
-
-   <!-- Item 3 -->
-   <div class="menu-item">
-     <a href="#!">System</a>
-   </div>
-   <!-- dowload btn -->
-   <div class="btn-header">
-     <a href="">Account</a>
-   </div>
-   <div class="btn-header">
-      <a href="">Login</a>
-    </div>
- </div>
-
-      <!-- thanhtam -->
+   <!-- thanhtam -->
 
       
       <!-- Intro Section -->
-      
       <div class="view jarallax" data-jarallax='{"speed": 0.2}'
          style="background-image: url('https://cdn.pixabay.com/photo/2018/03/07/18/42/menu-3206749_960_720.jpg'); background-repeat: no-repeat; background-size: cover; background-position: center center;margin-top:-125px;">
          <div class="mask rgba-indigo-light">
@@ -80,7 +66,7 @@
                            </li>
                            <li>
                               <h5 class="white-text description mb-5 wow fadeIn" data-wow-delay="0.4s">
-                                 Search for healthy recipes | {{total_recipes}} recipes
+                                 Tell me what you have and I will find you something cool !
                               </h5>
                            </li>
                            <hr>
@@ -104,36 +90,44 @@
                                        <div class="card-body">
                                           <!-- Material checked -->
                                           <div class="form-check form-check-inline">
-                                             <input type="checkbox" class="form-check-input" value="on" id="breakfast" name="breakfast">
-                                             <label class="form-check-label" for="breakfast">Breakfast</label>
+                                             <input type="checkbox" class="form-check-input" value="on" id="american" name="american">
+                                             <label class="form-check-label" for="american">American</label>
                                           </div>
                                           <div class="form-check form-check-inline">
-                                             <input type="checkbox" class="form-check-input" value="on" id="appetizers" name="appetizers">
-                                             <label class="form-check-label" for="appetizers">Appetizers</label>
+                                             <input type="checkbox" class="form-check-input" value="on" id="british" name="british">
+                                             <label class="form-check-label" for="british">British</label>
                                           </div>
                                           <div class="form-check form-check-inline">
-                                             <input type="checkbox" class="form-check-input" value="on" id="lunch" name="lunch">
-                                             <label class="form-check-label" for="lunch">Lunch</label>
+                                             <input type="checkbox" class="form-check-input" value="on" id="caribbean" name="caribbean">
+                                             <label class="form-check-label" for="caribbean">Caribbean</label>
                                           </div>
                                           <div class="form-check form-check-inline">
-                                             <input type="checkbox" class="form-check-input" value="on" id="salads" name="salads">
-                                             <label class="form-check-label" for="salads">Salads</label>
+                                             <input type="checkbox" class="form-check-input" value="on" id="chinese" name="chinese">
+                                             <label class="form-check-label" for="chinese">Chinese</label>
                                           </div>
                                           <div class="form-check form-check-inline">
-                                             <input type="checkbox" class="form-check-input" value="on" id="dinner" name="dinner">
-                                             <label class="form-check-label" for="dinner">Dinner</label>
+                                             <input type="checkbox" class="form-check-input" value="on" id="french" name="french">
+                                             <label class="form-check-label" for="french">French</label>
                                           </div>
                                           <div class="form-check form-check-inline">
-                                             <input type="checkbox" class="form-check-input" value="on" id="dessert" name="dessert">
-                                             <label class="form-check-label" for="dessert">Dessert</label>
+                                             <input type="checkbox" class="form-check-input" value="on" id="italian" name="italian">
+                                             <label class="form-check-label" for="italian">Italian</label>
                                           </div>
                                           <div class="form-check form-check-inline">
-                                             <input type="checkbox" class="form-check-input" value="on" id="easy" name="easy">
-                                             <label class="form-check-label" for="easy">Easy</label>
+                                             <input type="checkbox" class="form-check-input" value="on" id="japanese" name="japanese">
+                                             <label class="form-check-label" for="japanese">Japanese</label>
                                           </div>
                                           <div class="form-check form-check-inline">
-                                             <input type="checkbox" class="form-check-input" value="on" id="hard" name="hard">
-                                             <label class="form-check-labell" for="hard" style="margin-bottom: 0.5px;">Hard</label>
+                                             <input type="checkbox" class="form-check-input" value="on" id="kosher" name="kosher">
+                                             <label class="form-check-label" for="kosher">Kosher</label>
+                                          </div>
+                                          <div class="form-check form-check-inline">
+                                             <input type="checkbox" class="form-check-input" value="on" id="mediterranean" name="mediterranean">
+                                             <label class="form-check-label" for="mediterranean">Mediterranean</label>
+                                          </div>
+                                          <div class="form-check form-check-inline">
+                                             <input type="checkbox" class="form-check-input" value="on" id="mexican" name="mexican">
+                                             <label class="form-check-labell" for="mexican" style="margin-bottom: 0.5px;">Mexican</label>
                                           </div>
                                        </div>
                                     </div>
@@ -141,13 +135,18 @@
                               </div>
                               <!-- Accordion card -->
                               <li class="wow fadeIn" data-wow-delay="0.4s">
+                                 <audio id="startSound" src="{% static 'sound/start.mp3' %}"></audio>
+                                 <audio id="stopSound" src="{% static 'sound/stop.mp3' %}"></audio>
                                  <div class="md-form mb-0">
-                                    <input type="text" id="form51" class="form-control" name="search">
+                                    <input type="text" id="form51" class="form-control" name="search" style="color: floralwhite;">
                                     <label for="form51" class="">Search</label>
+                                    <i id="speechIcon" class="fas fa-microphone"></i>
+                                    <span id="recordingIndicator"></span> 
                                  </div>
                                  <button class="btn btn-white btn-rounded btn-lg orange-text font-weight-bold ml-lg-0" type="submit">
                                  <i class="fas fa-search orange-text mr-2" aria-hidden="true"></i> Get Recipes</button>
                               </li>
+                              <div id="keywordsContainer"></div>
                         </ul>
                      </div>
                   </div>
@@ -157,6 +156,59 @@
       </div>
       </form>
       {% include 'scripts.html' %}
+      <script>
+         // Speech-to-text functionality
+         $(document).ready(function() {
+            if ('webkitSpeechRecognition' in window) {
+               var recognition = new webkitSpeechRecognition();
+               var speechIcon = document.getElementById('speechIcon');
+               var recordingIndicator = document.getElementById('recordingIndicator');
+               var searchInput = document.getElementById('form51');
+               var startSound = document.getElementById('startSound');
+               var stopSound = document.getElementById('stopSound');
+               var isRecording = false
+               // var recognitionTimeout; // Variable to hold the recognition timeout
+
+               recognition.continuous = true;
+               recognition.interimResults = true;
+
+               recognition.onstart = function() {
+                  // clearTimeout(recognitionTimeout); // Clear any existing timeouts
+                  isRecording = true
+                  speechIcon.classList.add('recording');
+                  recordingIndicator.style.opacity = 1;
+                  searchInput.placeholder = 'Listening...';
+                  startSound.play(); // Play the start sound
+               }
+
+               recognition.onend = function() {
+                  isRecording = false
+                  speechIcon.classList.remove('recording');
+                  recordingIndicator.style.opacity = 0;
+                  searchInput.placeholder = 'Search';
+                  stopSound.play(); // Play the stop sound
+               }
+
+               speechIcon.addEventListener('click', function() {
+                  searchInput.focus(); // Focus on the search input field
+                  recognition.addEventListener("result",e=>{
+                     const transcript = Array.from(e.results)
+                     .map(result => result[0])
+                     .map(result => result.transcript)
+                     searchInput.value = transcript;   
+                  });
+
+                  if (isRecording){
+                     recognition.stop()
+                  }
+                  else{
+                     recognition.start();
+                  }
+                  
+               });
+            }
+         });
+      </script>
       <script>
          // Animation init
          new WOW().init();
@@ -168,3 +220,11 @@
       </script>
    </body>
 </html>
+
+
+
+
+
+
+
+

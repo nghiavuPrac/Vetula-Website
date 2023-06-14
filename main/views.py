@@ -1,69 +1,250 @@
-from django.shortcuts import render, get_object_or_404
-from .models import Recipe
+from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib.auth.models import User
+from django.contrib.auth import authenticate,login,logout
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+
+from .forms import  ProfileForm,form_validation_error
+
+from .models import DB_Recipe, API_Recipe, Profile
 from django.db.models import Q
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 
 from . import api_config
-from py_edamam import Edamam
+# from py_edamam import Edamam
+
+#import food_extraction
+import subprocess as sp
 import json
+import os
+import requests
+
+# ed_handler = Edamam(recipes_appid=api_config.recipes_appid,
+#                  recipes_appkey=api_config.recipes_appkey)    
+app_id = api_config.recipes_appid
+app_key = api_config.recipes_appkey
+
+class Edamam:
+    def __init__(self,app_id, app_key, startPagination=0, endPagination=12):
+        self.includeAppId = "app_id={}".format(app_id)
+        self.includeAppKey = "app_key={}".format(app_key)
+        self.startPagination = startPagination
+        self.endPagination = endPagination
+
+    def search_by_ingredients(self,inputIngredient):
+        curl = f"https://api.edamam.com/search?q={inputIngredient}&{self.includeAppId}&{self.includeAppKey}&from={self.startPagination}&to={self.endPagination}"
+        response = requests.get(curl)
+        return response.json()
+
+    def search_recipe(self,inputIngredient,inputCuisineType):
+        curl = f"https://api.edamam.com/search?q={inputIngredient}&cuisineType={inputCuisineType}&{self.includeAppId}&{self.includeAppKey}&from={self.startPagination}&to={self.endPagination}"
+        response = requests.get(curl)
+        return response.json()
+
+CuisineType_array = ["american", "british", "caribbean", 
+                     "chinese", "french", "italian", 
+                     "japanese", "kosher",
+                     "mediterranean", "mexican"]
 
 
-ed_handler = Edamam(recipes_appid=api_config.recipes_appid,
-                recipes_appkey=api_config.recipes_appkey)
+# utils
+def get_topic(request):
+    if request.GET.get("american"):
+        topic = "american"
+    elif request.GET.get("british"):
+        topic="british"
+    elif request.GET.get("caribbean"):
+        topic="caribbean"
+    elif request.GET.get("chinese"):
+        topic="chinese"
+    elif request.GET.get("french"):
+        topic="french"
+    elif request.GET.get("italian"):
+        topic="italian"
+    elif request.GET.get("japanese"):
+        topic="japanese"
+    elif request.GET.get("kosher"):
+        topic="kosher"
+    elif request.GET.get("mediterranean"):
+        topic="mediterranean"
+    elif request.GET.get("mexican"):
+        topic="mexican"
+    else:
+        topic = "all"
+    return topic
 
-class Food_Recipe():
-    def __init__(self,data):
-        self.title = data["label"]
-        self.image = data["image"]
-        self.description = data["healthLabels"]
-        self.url = data["url"]
-        self.time = data["totalTime"]
-        self.calories = data["calories"]
-        self.fat = data["totalNutrients"]["FAT"]['quantity']
-        self.protein = data["totalNutrients"]['PROCNT']['quantity']
-        self.carbs = data["totalNutrients"]['CHOCDF']['quantity']
-        self.cusine = data["cuisineType"]
-
-    def save(self):
-        pass
-    def describe(self):
-        return " * ".join(self.description)
-    
-
-def proccess_data(data):
+def proccess_query(data):
     try:
         payload = data["hits"]
-        results= [Food_Recipe(item["recipe"]) for item in payload]
+        results= [API_Recipe(item["recipe"],index) for index,item in enumerate(payload)]
         total = data["count"]
     except:
         results = list()
         total = 0
 
     return results, total
-    
 
-def search_with_API(request):
-    topic = "Edamam"
+def food_extraction(raw):
+    extracted = sp.getoutput(f"python main/food_extraction/Ner.py \"{raw}\"")
+    return extracted
+
+# home page
+def home(request):
+    return render(request, "home.html")
+
+
+# logic search and display
+def search_API(request):
     query = request.GET.get("search")
+    topic = get_topic(request)
     results = list()
     total = 0
-    if "query" in request.session:
-        #if query in session load data from session 
-        if query in request.session["query"] :
-            data = request.session["data"]
-            results, total = proccess_data(data)
-        else:
-            request.session.flush()
-            data = ed_handler.search_recipe(query)
-            results, total = proccess_data(data)  
-            request.session["query"] = query
-            request.session["data"] = data
-    
+
+    if query == "":
+        results = list()
+        extracted= ''
+        total = 0
+
     else:
-        data = ed_handler.search_recipe(query)
-        results, total = proccess_data(data)
-        request.session["query"] = query
-        request.session["data"] = data
+        if topic == "all":#search by ingredients only
+
+            if "extracted" in request.session:
+                #if query in session load data from session
+                extracted = request.session["extracted"]
+                if query == extracted:
+                    data = request.session["data"]
+                    results, total = proccess_query(data)
+                else:
+                #reset query
+                    # request.session.clear()
+                    print(request.user)
+                    extracted = food_extraction(query)
+                    api_handler = Edamam(app_id,app_key)
+                    data = api_handler.search_by_ingredients(extracted)
+                    results, total = proccess_query(data)  
+                    request.session["data"] = data
+                    request.session["extracted"]=extracted
+            
+            else:
+            #initialize new query
+                extracted = food_extraction(query)    
+                api_handler = Edamam(app_id,app_key)
+                data = api_handler.search_by_ingredients(query)
+                results, total = proccess_query(data)
+                request.session["data"] = data
+                request.session["extracted"]=extracted
+
+        else:#search by ingredients and cusine type
+            if "extracted" in request.session and "topic" in request.session:
+                #if query in session load data from session
+                extracted = request.session["extracted"] 
+                if (query==extracted) and topic in request.session["topic"]:
+                    data = request.session["data"]
+                    results, total = proccess_query(data)            
+                else:
+                    # request.session.clear()
+                    extracted = food_extraction(query)
+                    api_handler = Edamam(app_id,app_key)
+                    data = api_handler.search_recipe(extracted,topic)
+                    results, total = proccess_query(data)  
+                    request.session["topic"] = topic
+                    request.session["data"] = data
+                    request.session["extracted"]=extracted
+                    
+            else:
+                extracted = food_extraction(query)
+                api_handler = Edamam(app_id,app_key)
+                data = api_handler.search_recipe(extracted,topic)
+                results, total = proccess_query(data)
+                request.session["topic"] = topic
+                request.session["data"] = data
+                request.session["extracted"]=extracted
+    
+
+    #paginate results
+    paginator = Paginator(results, 3)
+    page = request.GET.get("page")
+    try:
+        results = paginator.page(page)
+    except PageNotAnInteger:
+        results = paginator.page(1)
+    except EmptyPage:
+        results = paginator.page(paginator.num_pages)
+
+    context = {
+        "topic":topic,
+        "page":page,
+        "total":total,
+        "query":extracted,
+        "results":results,
+    }
+    return render(request, "search.html", context)
+
+
+def save_recipe(user,recipe):
+    try:
+        DB_Recipe.objects.get(title=recipe.title,user=user)
+        return False,"The Recipe was saved"
+    except:
+        try:
+            DB_Recipe(title= recipe.title,
+                    image = recipe.image,
+                    description= recipe.description,
+                    ingredients= recipe.ingredients,
+                    directions = recipe.directions,
+                    servings = recipe.servings,
+                    time = recipe.time,
+                    calories = recipe.calories,
+                    fat = recipe.fat,
+                    carbs = recipe.carbs,
+                    protein = recipe.protein,
+                    topic = recipe.topic,
+                    user = user).save()
+            return True,"Save Success!"
+        except:
+           return False,"Fail to save!"
+
+@login_required(login_url='login',redirect_field_name="next")
+def recipe_detail(request,index):
+    data = request.session["data"]
+    payload = data["hits"]
+    recipe = API_Recipe(payload[int(index)]["recipe"],index)
+
+    if request.GET.get("save"):
+        user = request.user.profile
+        numRecipe = DB_Recipe.objects.filter(user=user).count()
+        if request.user.profile.purchase:
+            result,mess= save_recipe(user,recipe)
+        elif numRecipe <= 10:
+            result,mess= save_recipe(user,recipe)
+        else:
+            mess="You are using a free version which limited on number of recipe storage.\n Please upgrading pro version for full option!"
+        messages.info(request, mess)
+
+    context = {
+        "recipe": recipe,
+    }
+    return render(request, "detail.html", context)
+
+
+
+
+# user page
+@login_required(login_url='login')
+def user_profile(request):
+    user = request.user.profile
+    try:
+        results = DB_Recipe.objects.filter(user=user)
+        topic = "all"
+        query = request.user.username
+        total = results.count()
+    except:
+        results = []
+        topic = "all"
+        query = request.user.username
+        total = results.count()
+
+
 
     #paginate results
     paginator = Paginator(results, 3)
@@ -82,24 +263,97 @@ def search_with_API(request):
         "query":query,
         "results":results,
     }
-    return render(request, "search.html", context)
 
+    return render(request, "user.html",context)
 
+def SignupPage(request):
+    if request.method=='POST':
+        try:
+            uname=request.POST.get('username')
+            email=request.POST.get('email')
+            pass1=request.POST.get('password1')
+            pass2=request.POST.get('password2')
+            if pass1!=pass2:
+                messages.error(request,"Your password and confrom password are not Same!!")
+            else:
+                my_user=User.objects.create_user(uname,email,pass1)
+                my_user.save()
 
+                my_profile = Profile(user=my_user, username=my_user.username)
+                my_profile.save()  
 
-def home(request):
-    total_recipes = Recipe.objects.all().count()
-    context = {
-        "title":"Homepage",
-        "total_recipes":total_recipes,
-    }  
+                messages.success(request,"User Added!")
+                return redirect('login')                            
+        except:
+            messages.error(request,"Missing Value!")
         
-    return render(request, "home.html", context)
+
+    return render(request,'signup.html')
+
+def LoginPage(request):
+    if request.method == 'GET':
+        nextUrl = request.GET.get('next', None)
+
+    if request.method=='POST':
+            username=request.POST.get('username')
+            pass1=request.POST.get('pass')
+            user=authenticate(request,username=username,password=pass1)
+            if user is not None:
+                login(request,user)
+                nextUrl=request.POST.get('next',None)
+                if nextUrl != "":
+                    return redirect(nextUrl)
+                else:
+                    return redirect('user')
+            else:
+                messages.error(request,"Username or Password is incorrect!!!")
+
+    return render(request,'login.html')
+
+def LogoutPage(request):
+    logout(request)
+    return redirect('login')
+
+@login_required(login_url='login')
+def user_edit(request):
+    if request.method == 'POST':
+        form = ProfileForm(request.POST, request.FILES, instance=request.user.profile)
+        if form.is_valid():
+            form.save()
+            username = request.user.username
+            messages.success(request, f'{username}, Your profile is updated.')
+            return redirect(request.META.get('HTTP_REFERER'))
+        else:
+            messages.error(request, form_validation_error(form))
+
+    else:
+        form = ProfileForm(instance=request.user.profile)
+    context = {'form':form}
+    return render(request, 'user-editor.html',context)
 
 
 
-def search(request):
-    recipes = Recipe.objects.all()
+@login_required(login_url='login')
+def delete_recipe(request, item_id):
+    item = get_object_or_404(DB_Recipe, id=item_id)
+    item.delete()
+
+    # Add a success message
+    messages.success(request, 'Item removed successfully')
+
+    # Redirect back to the previous page
+    return redirect(request.META.get('HTTP_REFERER'))
+
+
+def detail(request, slug):
+    recipe = get_object_or_404(DB_Recipe, slug=slug, user= request.user.profile)
+    context = {
+        "recipe":recipe,
+    }
+    return render(request, "detail.html", context)
+
+def search_DB(request):
+    recipes = DB_Recipe.objects.all()
 
     if "search" in request.GET:
         query = request.GET.get("search")
@@ -150,9 +404,6 @@ def search(request):
     }
     return render(request, "search.html", context)
 
-def detail(request, slug):
-    recipe = get_object_or_404(Recipe, slug=slug)
-    context = {
-        "recipe":recipe,
-    }
-    return render(request, "detail.html", context)
+
+def test(request):
+    return render(request,"test.html")

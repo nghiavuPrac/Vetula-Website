@@ -1,5 +1,5 @@
 
-
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -15,7 +15,7 @@ SECRET_KEY = 'y=(ebl4aq_aso)msecret key 2z6a04c486b'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -28,6 +28,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'main',
+    'django_cleanup.apps.CleanupConfig',
 ]
 
 MIDDLEWARE = [
@@ -110,3 +111,6 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS= [BASE_DIR / "static"]
+
+MEDIA_ROOT =  os.path.join(BASE_DIR/'media')
+MEDIA_URL = '/media/'

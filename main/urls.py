@@ -1,9 +1,20 @@
 from django.urls import path
-from .views import home, search, detail, search_with_API
+from .views import *
 
 urlpatterns = [
     path("", home, name="home"),
-    #path("search", search, name="search"),
-    path("search", search_with_API, name="search"),
+    path("user", user_profile, name="user"),
+    path("user/edit/", user_edit, name="user-edit"),    
+    path("user/remove-item/<int:item_id>/", delete_recipe, name ="remove_item"),
+    
+    path("signup", SignupPage, name="signup"),
+    path("login", LoginPage, name="login"),
+    path("logout", LogoutPage, name="logout" ),
+
+    path("search", search_API, name="search"),
+    #path("search", search_DB, name="search"),
+    path("detail/<str:index>", recipe_detail, name ="recipe_detail"),
+
     path("<slug>", detail, name="detail"),
+
 ]

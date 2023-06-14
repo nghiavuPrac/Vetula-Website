@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+   {% load static %}
+
+   {% include 'head.html' %}
+    <style>
+        html,
+        body,
+        header,
+        .jarallax {
+            height: 1000px;
+            min-height: 800px;
+        }
+    
+        .notification-container {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+        }
+    
+        .notification {
+            padding: .3em 5%;
+            background-color: rgba(64, 243, 243, 0.808);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 60%;
+            border-radius: 5px;
+        }
+    
+        #cross {
+            cursor: pointer;
+        }
+    </style>
+
+    <link rel="stylesheet" href="{% static 'css/user-editor.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.1/css/all.min.css" integrity="sha256-2XFplPlrFClt0bIdPgpz8H7ojnk10H69xRqd9+uTShA=" crossorigin="anonymous" />
+
+
+<!-- thanhtam -->
+    <body>
+        <!-- thanhtam -->
+        <div class="menu">
+            <!-- logo -->
+            <div class="menu-item" style="float: left; color: white; display: block; margin-left: 50px; margin-top: 15px;">
+                <p> VETULA</p>
+            </div>
+            <!-- Item 1 -->
+            <div class="menu-item">
+                <a href="{% url 'home' %}">Home</a>
+            </div>
+
+            <!-- Item 2 -->
+            <div class="menu-item">
+                <a href="{% url 'user' %}">User</a>
+            </div>
+
+            <!-- Item 3 -->
+            <!-- <div class="menu-item">
+                <a href="#!">System</a>
+            </div> -->
+            <!-- dowload btn -->
+            <div class="btn-header">
+                <a href="{% url 'logout' %}">Logout</a>
+            </div>
+
+        </div>
+
+        {% if messages %}
+        <div class="notification-container">
+            <div class="notification">
+                {% for message in messages %}
+                <p {% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</p>
+                {% endfor %}
+                <img id='cross' src="{% static 'img/close.png' %}" width="15px" height="15px" alt="">
+            </div>
+        </div>
+
+        <script>
+            var cross = document.getElementById('cross')
+            cross.addEventListener('click', () => {
+                document.getElementsByClassName('notification-container')[0].style.display = 'none';
+            })
+        </script>
+        {% endif %}
+
+        <div class="container light-style flex-grow-1 container-p-y">
+
+            <h4 class="font-weight-bold py-3">
+                Account settings
+            </h4>
+            <hr class="mt-0 mb-4">
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="row">
+                    <div class="col-xl-4">
+                        <!-- Profile picture card-->
+                        <div class="card mb-4 mb-xl-0">
+                            <div class="card-header">Profile Picture</div>
+                            <div class="card-body text-center">
+                                <!-- Profile picture image-->
+                                <img class="img-account-profile" src="{{ user.profile.avatar_pic.url }}" alt="user-avatar">
+                                <!-- Profile picture help block-->
+                                <div class="small font-italic text-muted mb-4">JPG or PNG no larger than 5 MB</div>
+                                <!-- Profile picture upload button-->
+                                <label class="btn btn-primary" for="inputAvatar">Upload new image</label>
+                                <input name="avatar_pic" id="inputAvatar" accept="image/*" type="file" hidden/>
+                                <!-- name of file chosen -->
+                                <div id="file-chosen">No file chosen</div>
+                                <!-- <button class="btn btn-primary" type="file">Upload new image</button> -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <script>
+                        document.addEventListener('DOMContentLoaded', function() {
+                        // Get the input file element
+                        var inputFile = document.getElementById('inputAvatar');
+                        // Get the file-chosen element
+                        var fileChosen = document.getElementById('file-chosen');
+                        
+                        // Add event listener to the input file element
+                        inputFile.addEventListener('change', function() {
+                            // Get the selected file name
+                            var fileName = inputFile.files[0].name;
+                            // Update the file-chosen element with the selected file name
+                            fileChosen.innerText = fileName;
+                        });
+                        });
+                    </script>                    
+
+
+                    <div class="col-xl-8">
+                        <!-- Account details card-->
+                        <div class="card mb-4">
+                            <div class="card-header">Account Details</div>
+                            <div class="card-body">
+                                    <!-- Form Group (username)-->
+                                    <div class="mb-3">
+                                        <label class="small mb-1" for="inputUsername">Username (how your name will appear to other users on the site)</label>
+                                        <input name="username" class="form-control" id="inputUsername" type="text" placeholder="Enter your username" value="{{ user.profile.username|default:''  }}">
+                                    </div>
+                                    <!-- Form Row-->
+                                    <div class="row gx-3 mb-3">
+                                        <!-- Form Group (first name)-->
+                                        <div class="col-md-6">
+                                            <label class="small mb-1" for="inputFirstName">First name</label>
+                                            <input name="firstname" class="form-control" id="inputFirstName" type="text" placeholder="Enter your first name" value="{{ user.profile.firstname|default:''  }}">
+                                        </div>
+                                        <!-- Form Group (last name)-->
+                                        <div class="col-md-6">
+                                            <label class="small mb-1" for="inputLastName">Last name</label>
+                                            <input name="lastname" class="form-control" id="inputLastName" type="text" placeholder="Enter your last name" value="{{ user.profile.lastname|default:''  }}">
+                                        </div>
+                                    </div>
+                                    <!-- Form Row        -->
+                                    <div class="row gx-3 mb-3">
+                                        <!-- Form Group (organization name)-->
+                                        <div class="col-md-6">
+                                            <label class="small mb-1" for="inputOccName">Occupation</label>
+                                            <input name="occupation" class="form-control" id="inputOccName" type="text" placeholder="Enter your occupation" value="{{ user.profile.occupation|default:''  }}">
+                                        </div>
+                                        <!-- Form Group (location)-->
+                                        <div class="col-md-6">
+                                            <label class="small mb-1" for="inputLocation">Location</label>
+                                            <input name="location" class="form-control" id="inputLocation" type="text" placeholder="Enter your location" value="{{ user.profile.location|default:''  }}">
+                                        </div>
+                                    </div>
+                                    <!-- Form Group (email address)-->
+                                    <div class="mb-3">
+                                        <label class="small mb-1" for="inputEmailAddress">Email address</label>
+                                        <input name="email" class="form-control" id="inputEmailAddress" type="email" placeholder="Enter your email address" value="{{ user.email|default:''  }}">
+                                    </div>
+                                    <!-- Form Row-->
+                                    <div class="row gx-3 mb-3">
+                                        <!-- Form Group (phone number)-->
+                                        <div class="col-md-6">
+                                            <label class="small mb-1" for="inputPhone">Phone number</label>
+                                            <input name="phone" class="form-control" id="inputPhone" type="tel" placeholder="Enter your phone number" value="{{ user.profile.phone|default:''  }}">
+                                        </div>
+                                        <!-- Form Group (birthday)-->
+                                        <div class="col-md-6">
+                                            <label class="small mb-1" for="inputBirthday">Birthday</label>
+                                            <input name="birthday" class="form-control" id="inputBirthday" type="text" placeholder="dd/mm/yyyy" value="{{ user.profile.birthday|date:'m/d/Y'|default:'' }}">
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="small mb-1" for="inputAbout">About</label>
+                                        <textarea name="about" class="form-control" id="inputAbout" placeholder="Tell me about yourself" rows="5" >{{user.profile.about}}</textarea>
+                                    </div>
+                                    <!-- Save changes button-->
+                                    <button class="btn btn-primary" type="submit">Save changes</button>
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        
+
+
+
+   </body>
+</html>
