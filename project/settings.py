@@ -18,11 +18,11 @@ ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS").split(" ")
 
 
 # Dev env setup
-SECRET_KEY = 'y=(ebl4aq_aso)msecret key 2z6a04c486b'
+# SECRET_KEY = 'y=(ebl4aq_aso)msecret key 2z6a04c486b'
 
-DEBUG = True
+# DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+# ALLOWED_HOSTS = ['*']
 
 
 # Application definition
