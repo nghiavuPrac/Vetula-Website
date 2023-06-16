@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+   {% load static %}
+
+   {% include 'head.html' %}
+    <style>
+       html,
+       body,
+       header,
+       .jarallax {
+       height: 1000px;
+       min-height: 800px;
+       }
+    </style>
+
+    <link rel="stylesheet" href="{% static 'css/user.css' %}">
+
+ <!-- thanhtam -->
+    <body>
+
+    <!-- thanhtam -->
+    <div class="menu">
+        <!-- thanhtam -->
+        <div class="menu" style="margin-bottom: 125px;">
+            <!-- logo -->
+            <div class="menu-item" style="float: left; color: white; display: block; margin-left: 50px; margin-top: 15px;">
+                <p> VETULA</p>
+            </div>
+            <!-- Item 1 -->
+            <div class="menu-item">
+                <a href="{% url 'home' %}">Home</a>
+            </div>
+    
+            <!-- Item 2 -->
+            <div class="menu-item">
+                <a href="{% url 'user' %}">User</a>
+            </div>
+    
+            <!-- Item 3 -->
+            <!-- <div class="menu-item">
+                <a href="#!">System</a>
+            </div> -->
+            <!-- dowload btn -->
+            {% if user.is_authenticated %}
+            <div class="btn-header">
+                <a href="{% url 'logout' %}">Logout</a>
+            </div>
+            {% else %}
+            <div class="btn-header">
+                <a href="{% url 'login' %}">Login</a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+        <div class="container db-social">
+            <div class="jumbotron jumbotron-fluid">
+            </div>
+            <div class="container-fluid">
+                <div class="row justify-content-center">
+                    <div class="col-xl-11">
+                        <div class="widget head-profile has-shadow">
+                            <div class="widget-body pb-0">
+                                <div class="row d-flex align-items-center">
+                                    <div class="col-xl-4 col-md-4 d-flex justify-content-lg-start justify-content-md-start justify-content-center">
+                                        <ul>
+                                            <li>
+                                                <div class="user-counter">{{total}}</div>
+                                                <div class="heading">Saved</div>
+                                            </li>
+                                            <li>
+                                                <div class="user-counter">0</div>
+                                                <div class="heading">Original</div>
+                                            </li>
+                                            <!-- <li>
+                                                <div class="user-counter">216</div>
+                                                <div class="heading">Offline</div>
+                                            </li> -->
+                                        </ul>
+                                    </div>
+                                    <div class="col-xl-4 col-md-4 d-flex justify-content-center">
+                                        <div class="image-default">
+                                            <img class="rounded-circle" src="{{user.profile.avatar_pic.url}}" alt="..." >
+                                        </div>
+                                        <div class="infos">
+                                            {% if user.profile.name %}
+                                                <h2>{{ user.profile.name }}</h2>
+                                            {% else %}
+                                                <h2>{{ user.username }}</h2>
+                                            {% endif %}
+                                            <div class="location">{{user.profile.location}}</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xl-4 col-md-4 d-flex justify-content-lg-end justify-content-md-end justify-content-center">
+                                        <div class="follow">
+                                            <a class="btn btn-shadow" href="{% url 'user-edit' %}"><i class="la la-user-plus"></i> Edit info</a>
+                                            <!-- <div class="actions dark">
+                                                <div class="dropdown">
+                                                    <button type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle">
+                                                        <i class="la la-ellipsis-h"></i>
+                                                    </button>
+                                                    <div class="dropdown-menu" x-placement="bottom-start" style="display: none; position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 35px, 0px);">
+                                                        <a href="#" class="dropdown-item">
+                                                        Report
+                                                        </a>
+                                                        <a href="#" class="dropdown-item">
+                                                        Block
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div> -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row justify-content-center">
+                    <div class="col-xl-11">
+                        <div class="widget white-box">
+                            <div class="widget-header">
+                                <h3 class="widget-title">About</h3>
+                            </div>
+                            <div class="widget-body">
+                                <span>
+                                    {{user.profile.about}}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row justify-content-center">
+                    <div class="col-xl-11">
+                        <div class="widget white-box">
+                            <div class="widget-header">
+                                <h3 class="widget-title">Saved recipe</h3>
+                            </div>
+                            <div class="widget-body">
+                                <div class="container mt-5">
+                                    <!--Section: Content-->
+                                    <section class="">
+                                        <!-- Grid row -->
+                                        <div class="row">
+                
+                
+                                            {% for recipe in results %}
+                                            <!-- Grid column -->
+                                            <div class="col-lg-4 col-md-12 mb-lg-0 mb-4">
+                                                <!-- Card -->
+                                                <div class="card hoverable">
+                                                    <!-- Card image -->
+                                                    <img class="card-img-top" src="{{recipe.image}}" alt="Card image cap">
+                                                    <!-- Card content -->
+                                                    <div class="card-body">
+                                                        <!-- Title -->
+                                                        <a href="{{recipe.get_url}}" class="black-text">{{recipe.title}}</a>
+                                                        <!-- Text -->
+                                                        <p class="card-title text-muted font-small mt-3 mb-2">
+                                                            {{recipe.description|safe|slice:":150"}}</p>
+                                                        <a type="button" class="btn btn-flat text-primary p-0 mx-0"
+                                                            href="{{recipe.get_url}}">Read more<i
+                                                                class="fa fa-angle-right ml-2"></i></a>
+
+                                                        <span class="remove-icon float-right text-danger" style="cursor: pointer;" data-item-id="{{recipe.id}}">
+                                                            <i class="fa fa-trash"></i>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <!-- Card -->
+                                            </div>
+
+                                            <script>
+                                                // Get all remove icons
+                                                const removeIcons = document.querySelectorAll('.remove-icon');
+
+                                                // Add click event listener to each remove icon
+                                                removeIcons.forEach(removeIcon => {
+                                                    removeIcon.addEventListener('click', () => {
+                                                        // Show confirmation prompt
+                                                        const confirmed = confirm('Are you sure you want to remove this item?');
+
+                                                        if (confirmed) {
+                                                            // Get the item ID from the data attribute
+                                                            const itemId = removeIcon.getAttribute('data-item-id');
+
+                                                            // Send AJAX request to the Django endpoint
+                                                            fetch(`user/remove-item/${itemId}/`, {
+                                                                method: 'DELETE',
+                                                                headers: {
+                                                                    'X-CSRFToken': '{{ csrf_token }}',  // Include CSRF token if using Django's CSRF protection
+                                                                },
+                                                            })
+                                                            .then(response => {
+                                                                if (response.ok) {
+                                                                    // Handle successful removal
+                                                                    // const successMessage = response.headers.get('X-Message');
+                                                                    // if (successMessage){
+                                                                    //     alert(successMessage);
+                                                                    // }
+
+                                                                    // Reload the page
+                                                                    location.reload();
+                                                                } else {
+                                                                    // Handle removal failure
+                                                                    console.error('Failed to remove item.');
+                                                                }
+                                                            })
+                                                            .catch(error => {
+                                                                console.error('An error occurred:', error);
+                                                            });
+                                                        }
+                                                    });
+                                                });
+                                            </script>
+
+                                            {% endfor %}
+                
+                
+                                        </div>
+                                        <!-- Grid row -->
+                
+                
+                                        <!--##############################Pagination################################-->
+                
+                                        <!-- Pagination -->
+                                        <nav class="my-4 flex-center">
+                                            <ul class="list-unstyled pagination pagination-circle pg-blue mb-0">
+                
+                                                <!-- First -->
+                                                {% if page == "1" %}
+                                                <li class="page-item disabled clearfix d-none d-md-block">
+                                                    <a class="page-link" href="#">First</a>
+                                                </li>
+                                                {% else %}
+                                                <li class="page-item clearfix d-none d-md-block">
+                                                    <a class="page-link" href="?{{topic}}=on&search={{query}}&page=1">First</a>
+                                                </li>
+                                                {% endif %}
+                
+                                                <!-- Arrow left -->
+                                                {% if results.has_previous %}
+                                                <li class="page-item">
+                                                    <a class="page-link"
+                                                        href="?{{topic}}=on&search={{query}}&page={{results.previous_page_number}}"
+                                                        aria-label="Previous">
+                                                        <span aria-hidden="true">&laquo;</span>
+                                                        <span class="sr-only">Previous</span>
+                                                    </a>
+                                                </li>
+                                                {% else %}
+                                                <li class="page-item disabled">
+                                                    <a class="page-link" href="#" aria-label="Previous">
+                                                        <span aria-hidden="true">&laquo;</span>
+                                                        <span class="sr-only">Previous</span>
+                                                    </a>
+                                                </li>
+                                                {% endif %}
+                
+                                                <!-- Numbers -->
+                                                {% for number in results.paginator.page_range %}
+                                                <li class="page-item">
+                                                    <a class="page-link"
+                                                        href="?{{topic}}=on&search={{query}}&page={{number}}">{{number}}</a>
+                                                </li>
+                                                {% endfor %}
+                
+                
+                                                <!-- Arrow right -->
+                                                {% if results.has_next %}
+                                                <li class="page-item">
+                                                    <a class="page-link"
+                                                        href="?{{topic}}=on&search={{query}}&page={{results.next_page_number}}"
+                                                        aria-label="Next">
+                                                        <span aria-hidden="true">&raquo;</span>
+                                                        <span class="sr-only">Next</span>
+                                                    </a>
+                                                </li>
+                                                {% else %}
+                                                <li class="page-item disabled">
+                                                    <a class="page-link" href="#" aria-label="Next">
+                                                        <span aria-hidden="true">&raquo;</span>
+                                                        <span class="sr-only">Next</span>
+                                                    </a>
+                                                </li>
+                                                {% endif %}
+                
+                                                <!-- Last -->
+                                                {% if page != results.paginator.num_pages %}
+                                                <li class="page-item clearfix d-none d-md-block">
+                                                    <a class="page-link"
+                                                        href="?{{topic}}=on&search={{query}}&page={{results.paginator.num_pages}}">Last</a>
+                                                </li>
+                                                {% else %}
+                                                <li class="page-item clearfix d-none d-md-block disabled">
+                                                    <a class="page-link" href="#">Last</a>
+                                                </li>
+                                                {% endif %}
+                                            </ul>
+                                        </nav>
+                                        <!-- Pagination -->
+                
+                                        <!-- <div class="text-center mt-5">
+                                            <a href="{% url 'home' %}">Back Home</a>
+                                        </div> -->
+                                    </section>
+                                    <!--Section: Content-->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+
+            </div>
+        </div>
+   </body>
+</html>
