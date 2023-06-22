@@ -1,3 +1,4 @@
 *__pycache__*
 *migrations
 main/api_config.py
+.env

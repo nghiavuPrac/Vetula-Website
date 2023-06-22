@@ -103,6 +103,35 @@
                 <div class="card border-0 shadow">
                     <!-- <img src="https://www.bootdey.com/img/Content/avatar/avatar6.png" alt="..."> -->
                     <img src="{{user.profile.avatar_pic.url}}" alt="user-avatar">
+                    <div class="d-flex justify-content-start rounded-3 p-2 mb-2 justify-content-center"
+                        style="background-color: #efefef;">
+                        <div>
+                            <p class="text-muted mb-1">Saved</p>
+                            <p class="rounded-pill bg-primary text-white py-1 px-2 mb-0">
+                                <i class="fas fa-check"></i> {{total}}
+                            </p>
+                        </div>
+                        <hr class="my-0 mx-3" style="border-top: 1px solid #ccc;">
+                        <div class="px-3">
+                            <p class="text-muted mb-1">Original</p>
+                            <p class="rounded-pill bg-danger text-white py-1 px-2 mb-0">
+                                <i class="fas fa-times"></i> 0
+                            </p>
+                        </div>
+                        <hr class="my-0 mx-3" style="border-top: 1px solid #ccc;">
+                        <div>
+                            <p class="text-muted mb-1">Status</p>
+                            {% if user.profile.purchase == False %}
+                                <p class="rounded-pill bg-danger text-white py-1 px-2 mb-0">
+                                    <i class="fas fa-star"></i> FREE
+                                </p>
+                            {% else %}
+                                <p class="rounded-pill bg-success text-white py-1 px-2 mb-0">
+                                    <i class="fas fa-star"></i> PRO
+                                </p>
+                            {% endif %}
+                        </div>
+                    </div>
                     <div class="card-body p-1-9 p-xl-5">
                         <div class="mb-4">
                             <h3 class="h4 mb-0">{{user.profile.username|title}}</h3>
@@ -125,22 +154,12 @@
                             <li><a href="#!" class="rounded-3"><i class="fab fa-youtube"></i></a></li>
                             <li><a href="#!" class="rounded-3"><i class="fab fa-linkedin-in"></i></a></li>
                         </ul>
-                        <!-- <div class="">
-                            <ul>
-                                <li>
-                                    <div class="user-counter">{{total}}</div>
-                                    <div class="heading">Saved</div>
-                                </li>
-                                <li>
-                                    <div class="user-counter">0</div>
-                                    <div class="heading">Original</div>
-                                </li>
-                            </ul>
-                        </div> -->
+
                     </div>
-                    <!-- <a class="btn btn-shadow" href="{% url 'user-edit' %}"><i class="la la-user-plus"></i> Edit info</a> -->
                     <a type="button" class="btn btn-danger btn-xs waves-effect mb-2 waves-light" href="{% url 'user-edit' %}">Edit Info</a>
-                    <button type="button" class="btn btn-success btn-xs waves-effect mb-2 waves-light">Upgrade</button>
+                    {% if user.profile.purchase == False %}
+                        <a type="button" class="btn btn-success btn-xs waves-effect mb-2 waves-light" href="{% url 'process_payment' %}">Upgrade</a>
+                    {% endif %}
                 </div>
             </div>
             <div class="col-lg-8">

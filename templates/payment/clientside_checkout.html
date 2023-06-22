@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- Add meta tags for mobile and IE -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>PayPal Checkout Integration | Server Demo</title>
+    <link rel="stylesheet" type="text/css"
+        href="https://cdn.jsdelivr.net/npm/minstyle.io@2.0.1/dist/css/minstyle.io.min.css">
+</head>
+
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 d-flex justify-content-center align-items-center text-center">
+                <div>
+                    <h2 class="ms-text-center">Vetula Pro</h2>
+                    <div class="ms-text-center pb-2">
+                        <div class="ms-label ms-large ms-action2 ms-light">$2.00 USD</div>
+                    </div>
+                    <div id="alerts" class="ms-text-center"></div>
+                    <div id="loading" class="spinner-container ms-div-center">
+                        <div class="spinner"></div>
+                    </div>
+                    <div id="content" class="hide">
+                        <div class="ms-card ms-fill">
+                            <div class="ms-card-content">
+                                <img src="https://cdn.discordapp.com/attachments/1060825015681028127/1076385063903694908/rauljr7_3d_e83fed6a-69aa-4a6a-b0ec-928edd57aecf.png"
+                                    style="width:400px">
+                            </div>
+                        </div>
+                        <!-- Set up a container element for the button -->
+                        <div id="paypal-button-container"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Include the PayPal JavaScript SDK -->
+    <script
+        src="https://www.paypal.com/sdk/js?client-id=AXqRGsXdPk2BdU9aFEy4Hmn0q0P4tUzy1EnpV2oiYpjRQHjiiq9Ob3dCJ2FDlo750uU3Kkjqm1RA2dPS&currency=USD">
+    </script>
+
+    <script>
+        // Render the PayPal button into #paypal-button-container
+        paypal.Buttons({
+
+            // Call your server to set up the transaction
+            createOrder: function (data, actions) {
+                return actions.order.create({
+                    purchase_units: [{
+                        amount: {
+                            value: "0.01"
+                        }
+                    }]
+                })
+            },
+
+            // Call your server to finalize the transaction
+            onApprove: function (data, actions) {
+                return actions.order.capture().then(function (details) {
+                    alert('Transaction completed by ' + details.payer.name.given_name + "!");
+                });
+            }
+
+        }).render('#paypal-button-container');
+    </script>
+</body>
+
+</html>

@@ -10,12 +10,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'y=(ebl4aq_aso)msecret key 2z6a04c486b'
+SECRET_KEY = os.environ.get("SECRET_KEY")
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = int(os.environ.get("DEBUG",default=0))
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS").split(" ")
+
 
 
 # Application definition
@@ -29,7 +29,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'main',
     'django_cleanup.apps.CleanupConfig',
-    'paypalrestsdk',
+    'paypal.standard.ipn',
+
 ]
 
 MIDDLEWARE = [
@@ -116,7 +117,11 @@ STATICFILES_DIRS= [BASE_DIR / "static"]
 MEDIA_ROOT =  os.path.join(BASE_DIR/'media')
 MEDIA_URL = '/media/'
 
+#EDAMAM
+EDAMAM_ID= os.environ.get("EDAMAM_ID")
+EDAMAM_KEY= os.environ.get("EDAMAM_KEY")
+
 #Paypal
-PAYPAL_MODE = 'sandbox'  # Use 'live' for production environment
-PAYPAL_CLIENT_ID = 'ASnl46OMKIBeTfxV-UrWKP_Y8GYRUyoj93S_Hj1xVZCA28BwQ0MAOi0yhTclslKlrq_PCp4s_mgnocuo'
-PAYPAL_CLIENT_SECRET = 'EPaCIPwO0xYe0X8BsmEpLxynbkC_r1ozDA1d7TmxvvwHGYLdy0aaRaFCRZV9mv9lfU0haKDQjfPNr67T'
+PAYPAL_RECEIVER_EMAIL = os.environ.get("PAYPAL_RECEIVER_EMAIL")
+PAYPAL_TEST = os.environ.get("PAYPAL_TEST")
+

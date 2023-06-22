@@ -95,7 +95,7 @@ if __name__ == '__main__':
     # Extract entity from text
     result = ingredient_extraction(data, mwe, condition)
   except:
-    result = ""
+    result = data
 
   # # Save entity list to file
   # file_name = os.path.basename(path)

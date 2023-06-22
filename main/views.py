@@ -1,18 +1,18 @@
-from django.shortcuts import render, get_object_or_404, redirect
+from django.shortcuts import render, get_object_or_404, redirect, reverse
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate,login,logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 
-
+import uuid
 
 from .forms import  ProfileForm,form_validation_error
-from paypalrestsdk import Payment
+
 from .models import DB_Recipe, API_Recipe, Profile
 from django.db.models import Q
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 
-from . import api_config
+from django.conf import settings
 # from py_edamam import Edamam
 
 #import food_extraction
@@ -21,11 +21,16 @@ import json
 import os
 import requests
 
+from paypal.standard.forms import PayPalPaymentsForm
+from django.views.decorators.csrf import csrf_exempt
+
+
 
 # ed_handler = Edamam(recipes_appid=api_config.recipes_appid,
 #                  recipes_appkey=api_config.recipes_appkey)    
-app_id = api_config.recipes_appid
-app_key = api_config.recipes_appkey
+app_id = settings.EDAMAM_ID
+app_key = settings.EDAMAM_KEY
+MAX_RECIPE_FREE = 5 
 
 class Edamam:
     def __init__(self,app_id, app_key, startPagination=0, endPagination=12):
@@ -218,7 +223,7 @@ def recipe_detail(request,index):
         numRecipe = DB_Recipe.objects.filter(user=user).count()
         if request.user.profile.purchase:
             result,mess= save_recipe(user,recipe)
-        elif numRecipe <= 10:
+        elif numRecipe <= MAX_RECIPE_FREE:
             result,mess= save_recipe(user,recipe)
         else:
             mess="You are using a free version which limited on number of recipe storage.\n Please upgrading pro version for full option!"
@@ -412,55 +417,33 @@ def test(request):
     return render(request,"test.html")
 
 #Paypal
-def create_payment(request):
-    # Generate ID
-    payment_id = str(uuid.uuid4())  
-    payer_id = str(uuid.uuid4())  
-    
-    # Set up the payment object
-    #tui không rõ cái domain mình là gì , phiền sửa lại cái redirect_urls giúp tui nhé. Máy khs debug không dc
-    
-    payment = Payment({
-        "intent": "sale",
-        "payer": {
-            "payment_method": "paypal"
-        },
-        "redirect_urls": {
-            "return_url": f"http://yourdomain.com/payment/execute?paymentId={payment_id}&PayerID={payer_id}",
-            "cancel_url": "http://yourdomain.com/payment/cancel"
-        },
-        "transactions": [{
-            "amount": {
-                "total": "50.000",
-                "currency": "VND"
-            },
-            "description": "Payment for recipe ."
-        }]
-    })
+def checkout(request):
+    return render(request, "payment/clientside_checkout.html")
 
-    # Create the payment
-    if payment.create():
-        # Payment created successfully, redirect user to PayPal approval URL
-        for link in payment.links:
-            if link.method == "REDIRECT":
-                redirect_url = link.href
-                return redirect(redirect_url)
-    else:
-        # Failed to create payment, handle the error
-        return render(request, 'payment_error.html', {'error': payment.error})
-    
-def execute_payment(request):
-    payment_id = request.GET.get('paymentId')
-    payer_id = request.GET.get('PayerID')
+@login_required(login_url='login',redirect_field_name="next")
+def process_payment(request):
+    current_user = request.user.profile
+    paypal_dict = {
+        'business': settings.PAYPAL_RECEIVER_EMAIL,
+        'amount': 2.00,
+        'item_name': '{}-{} Upgrade Vetula Pro'.format(current_user.username,str(current_user.id)),
+        'currency_code': 'USD',
+        'invoice': '{}-{}'.format(str(current_user.id),request.user.email),
+        'notify_url': request.build_absolute_uri(reverse('paypal-ipn')),
+        'return_url': request.build_absolute_uri(reverse('successful')),
+        'cancel_return': request.build_absolute_uri(reverse('cancelled')),
+    }
 
-    if not payment_id or not payer_id:
-        return render(request, 'payment_error.html', {'error': 'Payment information missing.'})
+    form = PayPalPaymentsForm(initial=paypal_dict)
+    context = {'form': form}
+    return render(request, 'payment/serverside_checkout.html',context=context)
 
-    payment = Payment.find(payment_id)
 
-    if payment.execute({"payer_id": payer_id}):
-        # Payment executed successfully, handle the success scenario
-        return render(request, 'payment_success.html')
-    else:
-        # Failed to execute payment, handle the error
-        return render(request, 'payment_error.html', {'error': payment.error})
+@csrf_exempt
+def payment_done(request):
+    return render(request, 'payment/successful.html')
+
+
+@csrf_exempt
+def payment_cancelled(request):
+    return render(request, 'payment/cancelled.html')

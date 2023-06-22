@@ -4,4 +4,8 @@ from django.apps import AppConfig
 class MainConfig(AppConfig):
     name = 'main'
 
-MainConfig.get_model()
+    def ready(self):
+        # import signal handlers
+        import main.hooks
+
+# MainConfig.get_model()

@@ -6,6 +6,11 @@ Django web app searching recipe base on ingredients
 ---
 
 ## Reference
+- Paypal integration:
+https://overiq.com/django-paypal-integration-with-django-paypal/ , https://www.youtube.com/watch?v=8rMfW4wO-vU&t=156s , 
+- paypal layout:
+https://github.com/paypaldev/PayPal-Advanced-Checkout-Tutorial/blob/main/index.html  
+
 - api searching
 https://github.com/SkyinScotlandCodes/searchproject-python/blob/main/add_ingredients.py 
 
