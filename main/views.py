@@ -287,7 +287,7 @@ def SignupPage(request):
                 my_user=User.objects.create_user(uname,email,pass1)
                 my_user.save()
 
-                my_profile = Profile(user=my_user, username=my_user.username)
+                my_profile = Profile(user=my_user, username=my_user.username, email=my_user.email )
                 my_profile.save()  
 
                 messages.success(request,"User Added!")
@@ -327,9 +327,19 @@ def user_edit(request):
     if request.method == 'POST':
         form = ProfileForm(request.POST, request.FILES, instance=request.user.profile)
         if form.is_valid():
+            emailF = form["email"].value()
+            userFname = form["username"].value()            
+
             form.save()
-            username = request.user.username
-            messages.success(request, f'{username}, Your profile is updated.')
+            user = User.objects.get(username = request.user.username)
+            if userFname != user.username:
+                user.username = userFname
+            if emailF != user.email:
+                user.email = emailF
+            
+            user.save()
+            
+            messages.success(request, f'{request.user.username} is updated.')
             return redirect(request.META.get('HTTP_REFERER'))
         else:
             messages.error(request, form_validation_error(form))

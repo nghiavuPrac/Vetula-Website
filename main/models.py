@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils.timezone import now
+from django.core.validators import RegexValidator, EmailValidator
+
 
 from autoslug import AutoSlugField
 from django.shortcuts import reverse, redirect
@@ -9,7 +11,7 @@ import datetime
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete= models.CASCADE)
 
-    username = models.CharField(max_length=200, null=True, blank= True)
+    username = models.CharField(max_length=200, null=True)
 
     firstname = models.CharField(max_length=100, null=True, blank= True)
 
@@ -19,7 +21,10 @@ class Profile(models.Model):
 
     location = models.CharField(max_length=200, null=True, blank= True)
 
-    phone = models.CharField(max_length=20, blank=True, null=True)
+    email = models.EmailField(max_length=254)
+
+    phone_regex = RegexValidator(regex=r'^\+?1?\d{9,15}$', message="Phone number must be entered in the format: '+999999999'. Up to 15 digits allowed.")
+    phone = models.CharField(validators=[phone_regex], max_length=17, blank=True) # validators should be a list
 
     birthday = models.DateField(default=now, blank=True, null =True)
 
