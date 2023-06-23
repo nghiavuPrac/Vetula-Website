@@ -50,3 +50,6 @@ typing_extensions==4.6.3
 urllib3==2.0.2
 wasabi==1.1.1
 yarg==0.1.9
+
+
+python-dotenv==1.0.0
