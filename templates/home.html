@@ -154,6 +154,7 @@
             </div>
          </div>
       </div>
+      
       </form>
       {% include 'scripts.html' %}
       <script>
@@ -171,6 +172,7 @@
 
                recognition.continuous = true;
                recognition.interimResults = true;
+               recognition.lang="en-US";
 
                recognition.onstart = function() {
                   // clearTimeout(recognitionTimeout); // Clear any existing timeouts

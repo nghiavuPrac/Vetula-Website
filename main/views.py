@@ -30,7 +30,7 @@ from django.views.decorators.csrf import csrf_exempt
 #                  recipes_appkey=api_config.recipes_appkey)    
 app_id = settings.EDAMAM_ID
 app_key = settings.EDAMAM_KEY
-MAX_RECIPE_FREE = 5 
+MAX_RECIPE_FREE = 5
 
 class Edamam:
     def __init__(self,app_id, app_key, startPagination=0, endPagination=12):
@@ -435,7 +435,7 @@ def process_payment(request):
     current_user = request.user.profile
     paypal_dict = {
         'business': settings.PAYPAL_RECEIVER_EMAIL,
-        'amount': 2.00,
+        'amount': 0.01,
         'item_name': '{}-{} Upgrade Vetula Pro'.format(current_user.username,str(current_user.id)),
         'currency_code': 'USD',
         'invoice': '{}-{}'.format(str(current_user.id),request.user.email),

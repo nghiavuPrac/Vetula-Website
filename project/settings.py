@@ -1,6 +1,6 @@
 import os
 from pathlib import Path
-from dotenv import load_dotenv
+from dotenv import load_dotenv,dotenv_values
 
 dotenv_path = os.path.join(os.getcwd(),".env")
 load_dotenv(dotenv_path)
@@ -127,5 +127,5 @@ EDAMAM_KEY= os.environ.get("EDAMAM_KEY")
 
 #Paypal
 PAYPAL_RECEIVER_EMAIL = os.environ.get("PAYPAL_RECEIVER_EMAIL")
-PAYPAL_TEST = os.environ.get("PAYPAL_TEST")
+PAYPAL_TEST = int(os.environ.get("PAYPAL_TEST",default=0))
 
