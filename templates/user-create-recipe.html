@@ -87,7 +87,7 @@
         <div class="container light-style flex-grow-1 container-p-y">
 
             <h4 class="font-weight-bold py-3">
-                Account settings 
+                Create recipe
             </h4>
             <hr class="mt-0 mb-4">
             <form method="post" enctype="multipart/form-data">
@@ -96,18 +96,18 @@
                     <div class="col-xl-4">
                         <!-- Profile picture card-->
                         <div class="card mb-4 mb-xl-0">
-                            <div class="card-header">Profile Picture</div>
+                            <div class="card-header">Recipe image</div>
                             <div class="card-body text-center">
-                                <!-- Profile picture image-->
-                                <img class="img-account-profile" src="{{ user.profile.avatar_pic.url }}" alt="user-avatar">
+                                <!-- Recipe picture image-->
+                                <img class="img-account-profile" src="" alt="Recipe-avatar">
                                 <!-- Profile picture help block-->
                                 <div class="small font-italic text-muted mb-4">JPG or PNG no larger than 5 MB</div>
                                 <!-- Profile picture upload button-->
-                                <label class="btn btn-primary" for="inputAvatar">Upload new image</label>
-                                <input name="avatar_pic" id="inputAvatar" accept="image/*" type="file" hidden/>
+                                <label class="btn btn-primary" for="inputRecipeImage">Upload new image</label>
+                                <input name="image" id="inputRecipeImage" accept="image/*" type="file" hidden/>
                                 <!-- name of file chosen -->
                                 <div id="file-chosen">No file chosen</div>
-                                <!-- <button class="btn btn-primary" type="file">Upload new image</button> -->
+                                <!--  -->
                             </div>
                         </div>
                     </div>
@@ -115,7 +115,7 @@
                     <script>
                         document.addEventListener('DOMContentLoaded', function() {
                         // Get the input file element
-                        var inputFile = document.getElementById('inputAvatar');
+                        var inputFile = document.getElementById('inputRecipeImage');
                         // Get the file-chosen element
                         var fileChosen = document.getElementById('file-chosen');
                         
@@ -133,62 +133,81 @@
                     <div class="col-xl-8">
                         <!-- Account details card-->
                         <div class="card mb-4">
-                            <div class="card-header">Account Details</div>
+                            <div class="card-header">Input recipe details</div>
                             <div class="card-body">
-                                    <!-- Form Group (username)-->
+                                    <!-- Form Group (Title)-->
                                     <div class="mb-3">
-                                        <label class="small mb-1" for="inputUsername">Username (how your name will appear to other users on the site)</label>
-                                        <input name="username" class="form-control" id="inputUsername" type="text" placeholder="Enter your username" value="{{ user.profile.username|default:''  }}">
+                                        <label class="small mb-1" for="inputTitle">Recipe Title</label>
+                                        <input name="title" class="form-control" id="inputTitle" type="text" placeholder="Title" value="{{ DB_Recipe.title|default:''  }}">
                                     </div>
                                     <!-- Form Row-->
                                     <div class="row gx-3 mb-3">
-                                        <!-- Form Group (first name)-->
+                                        <!-- Form Group (Calories)-->
                                         <div class="col-md-6">
-                                            <label class="small mb-1" for="inputFirstName">First name</label>
-                                            <input name="firstname" class="form-control" id="inputFirstName" type="text" placeholder="Enter your first name" value="{{ user.profile.firstname|default:''  }}">
+                                            <label class="small mb-1" for="inputCalories">Calories</label>
+                                            <input name="calories" class="form-control" id="inputCalories" type="text" placeholder="Enter Calories" value="{{ DB_Recipe.calories|default:''  }}">
                                         </div>
-                                        <!-- Form Group (last name)-->
+                                        <!-- Form Group (Carbs)-->
                                         <div class="col-md-6">
-                                            <label class="small mb-1" for="inputLastName">Last name</label>
-                                            <input name="lastname" class="form-control" id="inputLastName" type="text" placeholder="Enter your last name" value="{{ user.profile.lastname|default:''  }}">
+                                            <label class="small mb-1" for="inputCarbs">Carbs</label>
+                                            <input name="carbs" class="form-control" id="inputCarbs" type="text" placeholder="Enter Carbs" value="{{ DB_Recipe.carbs|default:''  }}">
                                         </div>
                                     </div>
                                     <!-- Form Row        -->
                                     <div class="row gx-3 mb-3">
-                                        <!-- Form Group (organization name)-->
+                                        <!-- Form Group (Fat)-->
                                         <div class="col-md-6">
-                                            <label class="small mb-1" for="inputOccName">Occupation</label>
-                                            <input name="occupation" class="form-control" id="inputOccName" type="text" placeholder="Enter your occupation" value="{{ user.profile.occupation|default:''  }}">
+                                            <label class="small mb-1" for="inputFat">Fat</label>
+                                            <input name="fat" class="form-control" id="inputFat" type="text" placeholder="Enter Fat" value="{{ DB_Recipe.fat|default:''  }}">
                                         </div>
-                                        <!-- Form Group (location)-->
+                                        <!-- Form Group (Protein)-->
                                         <div class="col-md-6">
-                                            <label class="small mb-1" for="inputLocation">Location</label>
-                                            <input name="location" class="form-control" id="inputLocation" type="text" placeholder="Enter your location" value="{{ user.profile.location|default:''  }}">
+                                            <label class="small mb-1" for="inputProtein">Protein</label>
+                                            <input name="protein" class="form-control" id="inputProtein" type="text" placeholder="Enter Protein" value="{{ DB_Recipe.protein|default:''  }}">
                                         </div>
                                     </div>
-                                    <!-- Form Group (email address)-->
+                                    <!-- Form Group ( directions)-->
+                                    
                                     <div class="mb-3">
-                                        <label class="small mb-1" for="inputEmailAddress">Email address</label>
-                                        <input name="email" class="form-control" id="inputEmailAddress" type="email" placeholder="Enter your email address" value="{{ user.email|default:''  }}">
+                                        <label class="small mb-1" for="inputIngredients">Ingredients</label>
+                                        {% comment %} <input name="ingredients" class="form-control" id="inputIngredients" type="text" placeholder="Enter Ingredients"  value="{{ DB_Recipe.ingredients|default:''  }}"> {% endcomment %}
+                                        <textarea name="ingredients" class="form-control" id="inputIngredients" placeholder="Enter Ingredients" rows="3" >{{DB_Recipe.ingredients}}</textarea>
                                     </div>
                                     <!-- Form Row-->
                                     <div class="row gx-3 mb-3">
-                                        <!-- Form Group (phone number)-->
+                                        <!-- Form Group (ingredients)-->
                                         <div class="col-md-6">
-                                            <label class="small mb-1" for="inputPhone">Phone number</label>
-                                            <input name="phone" class="form-control" id="inputPhone" type="tel" placeholder="Enter your phone number" value="{{ user.profile.phone|default:''  }}">
+                                            <label class="small mb-1" for="inputDirections">Direction</label>
+                                            <input name="directions" class="form-control" id="inputDirections" type="text" placeholder="Enter directions"  value="{{ DB_Recipe.directions|default:''  }}">
                                         </div>
-                                        <!-- Form Group (birthday)-->
+                                        <!-- Form Group (topic)-->
                                         <div class="col-md-6">
-                                            <label class="small mb-1" for="inputBirthday">Birthday</label>
-                                            <input name="birthday" class="form-control" id="inputBirthday" type="text" placeholder="dd/mm/yyyy" value="{{ user.profile.birthday|date:'m/d/Y'|default:'' }}">
+                                            <label class="small mb-1" for="inputTopic">Topic</label>
+                                            <input name="topic" class="form-control" id="inputTopic" type="text" placeholder="Enter topic" value="{{ DB_Recipe.topic|default:'' }}">
                                         </div>
                                     </div>
-
+                                    
+                                    <!-- Form Row-->
+                                    <div class="row gx-3 mb-3">
+                                        <!-- Form Group (ingredients)-->
+                                        <div class="col-md-6">
+                                            <label class="small mb-1" for="inputServings">Servings</label>
+                                            <input name="servings" class="form-control" id="inputServings" type="text" placeholder="Enter servings"  value="{{ DB_Recipe.servings|default:''  }}">
+                                        </div>
+                                        <!-- Form Group (topic)-->
+                                        <div class="col-md-6">
+                                            <label class="small mb-1" for="inputTime">Time</label>
+                                            <input name="time" class="form-control" id="inputTime" type="text" placeholder="Enter time" value="{{ DB_Recipe.time|default:'' }}">
+                                        </div>
+                                    </div>
+                                    
                                     <div class="mb-3">
-                                        <label class="small mb-1" for="inputAbout">About</label>
-                                        <textarea name="about" class="form-control" id="inputAbout" placeholder="Tell me about yourself" rows="5" >{{user.profile.about}}</textarea>
+                                        <label class="small mb-1" for="inputDescription">Description</label>
+                                        <textarea name="description" class="form-control" id="inputDescription" placeholder="Enter Description" rows="5" >{{DB_Recipe.description}}</textarea>
                                     </div>
+                                    <!-- Hidden Value -->
+                                    <input type="hidden" name="user" value="{{ user.profile.id }}">
+                                    <input type="hidden" name="original" value="true" >
                                     <!-- Save changes button-->
                                     <button class="btn btn-primary" type="submit">Save changes</button>
                                 

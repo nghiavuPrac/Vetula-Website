@@ -1,3 +1,4 @@
+import logging
 from django.shortcuts import render, get_object_or_404, redirect, reverse
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate,login,logout
@@ -6,7 +7,7 @@ from django.contrib import messages
 
 import uuid
 
-from .forms import  ProfileForm,form_validation_error
+from .forms import  ProfileForm, RecipeForm,form_validation_error
 
 from .models import DB_Recipe, API_Recipe, Profile
 from django.db.models import Q
@@ -242,27 +243,37 @@ def recipe_detail(request,index):
 def user_profile(request):
     user = request.user.profile
     try:
-        results = DB_Recipe.objects.filter(user=user)
+        results = DB_Recipe.objects.filter(user=user, original=False) 
+        # select * from DB_Recipe where user = user and original = False
         topic = "all"
         query = request.user.username
         total = results.count()
+        original_results = DB_Recipe.objects.filter(user=user, original=True)
+        original_total =  original_results.count()
     except:
         results = []
         topic = "all"
         query = request.user.username
         total = results.count()
+        original_results = DB_Recipe.objects.filter(user=user, original=True)
+        original_total =  original_results.count()
 
 
 
     #paginate results
     paginator = Paginator(results, 3)
-    page = request.GET.get("page")
+    original_paginator = Paginator(original_results, 3)
+    page = request.GET.get("page", 1)
+    original_page = request.GET.get("original_page", 1)
     try:
         results = paginator.page(page)
+        original_results = original_paginator.page(original_page)
     except PageNotAnInteger:
         results = paginator.page(1)
+        original_results = original_page.page(1)
     except EmptyPage:
         results = paginator.page(paginator.num_pages)
+        original_results = original_page.page(original_page.num_pages)
 
     context = {
         "topic":topic,
@@ -270,6 +281,9 @@ def user_profile(request):
         "total":total,
         "query":query,
         "results":results,
+        "original_results" : original_results,
+        "original_total" : original_total,
+        "original_page" : original_page,
     }
 
     return render(request, "user.html",context)
@@ -282,7 +296,7 @@ def SignupPage(request):
             pass1=request.POST.get('password1')
             pass2=request.POST.get('password2')
             if pass1!=pass2:
-                messages.error(request,"Your password and confrom password are not Same!!")
+                messages.error(request,"Your password and confirm password are not Same!!")
             else:
                 my_user=User.objects.create_user(uname,email,pass1)
                 my_user.save()
@@ -348,8 +362,57 @@ def user_edit(request):
         form = ProfileForm(instance=request.user.profile)
     context = {'form':form}
     return render(request, 'user-editor.html',context)
+logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
+#create recipe for user
+@login_required(login_url='login')
+def user_create_recipe(request):
+    # if request.method == 'POST':
+    #     form = RecipeForm(request.POST, request.FILES)
+    #     if form.is_valid():
+    #         try:
+    #             DB_Recipe.objects.get(title=RecipeForm.title,user=request.user)
+    #             return False,"The Recipe was saved"
+    #         except:
+    #             try:
+    #                 logging.debug(RecipeForm.title)
+    #                 DB_Recipe(title= RecipeForm.title,
+    #                         # image = RecipeForm.image,
+    #                         description= RecipeForm.description,
+    #                         ingredients= RecipeForm.ingredients,
+    #                         directions = RecipeForm.directions,
+    #                         servings = RecipeForm.servings,
+    #                         time = RecipeForm.time,
+    #                         calories = RecipeForm.calories,
+    #                         fat = RecipeForm.fat,
+    #                         carbs = RecipeForm.carbs,
+    #                         protein = RecipeForm.protein,
+    #                         topic = RecipeForm.topic,
+    #                         user = request.user).save()
+    #                 return redirect(request.META.get('HTTP_REFERER'))
+    #             except:
+    #                 return False,"Fail to save!"
+    # else:
+    #     form = RecipeForm()
+    # return render(request, 'user-create-recipe.html', {'form': form})
+    if request.method == 'POST':
+        form = RecipeForm(request.POST, request.FILES)
+        if form.is_valid():
+            
+            form.save()
+            print("aaaaa")
+            messages.success(request, f'{request.user.username} is updated.')
+            return redirect(request.META.get('HTTP_REFERER'))
+        else:   
+            print("bbbbb")
+            messages.error(request, form_validation_error(form))
 
-
+    else:
+        print("vvvvv")
+        # form = ProfileForm(instance=request.user.profile)
+        form = RecipeForm(instance=request.user)
+    context = {'form':form}
+    return render(request, 'user-create-recipe.html',context)
+##############################
 
 @login_required(login_url='login')
 def delete_recipe(request, item_id):

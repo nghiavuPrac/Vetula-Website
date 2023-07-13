@@ -31,7 +31,7 @@ class Profile(models.Model):
     about = models.TextField(default="I love cooking")
 
     avatar_pic =  models.ImageField(default = 'image/user_default.png', upload_to = 'user-avatar', null = True, blank = True)
-
+    
     purchase = models.BooleanField(default=False)
 
     def __str__(self):
@@ -66,17 +66,11 @@ class API_Recipe():
     def get_url(self):
         return reverse("recipe_detail",kwargs={"index":self.index})
 
-class Topic(models.Model):
-    title = models.CharField(max_length=200)
-    slug = AutoSlugField(populate_from="title")
-
-    def __str__(self):
-        return self.title
-
 class DB_Recipe(models.Model):
     title = models.CharField(max_length=200)
     slug = AutoSlugField(populate_from="title")
-    image = models.CharField(max_length=400)
+    # image = models.CharField(max_length=400)
+    image =  models.ImageField(default = 'image/user_default.png', upload_to = 'user-avatar', null = True, blank = True)
     description = models.TextField()
     ingredients = models.TextField()
     directions = models.CharField(max_length=100)
@@ -87,7 +81,7 @@ class DB_Recipe(models.Model):
     carbs = models.CharField(max_length=5)
     protein = models.CharField(max_length=5)
     topic = models.CharField(max_length=50)
-
+    
     user = models.ForeignKey(Profile, on_delete=models.CASCADE)
 
     original = models.BooleanField(default=False)
@@ -100,5 +94,10 @@ class DB_Recipe(models.Model):
             "slug":self.slug,
         })
 
+class Topic(models.Model):
+    title = models.CharField(max_length=200)
+    slug = AutoSlugField(populate_from="title")
 
+    def __str__(self):
+        return self.title
   
