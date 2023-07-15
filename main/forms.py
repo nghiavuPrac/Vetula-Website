@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
 
-from .models import Profile
+from .models import DB_Recipe, Profile
 from django.forms.models import ModelForm
 
 from django.forms.widgets import FileInput
@@ -11,6 +11,12 @@ class ProfileForm(ModelForm):
         model = Profile
         fields = '__all__'
         exclude = ['user','purchase']
+
+class RecipeForm(ModelForm):
+    class Meta:
+        model = DB_Recipe
+        fields = '__all__'
+        # exclude = ['user']
 
 
 def form_validation_error(form):

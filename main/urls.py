@@ -8,6 +8,7 @@ urlpatterns = [
     path("user", user_profile, name="user"),
     path("user/edit/", user_edit, name="user-edit"),    
     path("user/remove-item/<int:item_id>/", delete_recipe, name ="remove_item"),
+    path("user/create-recipe", user_create_recipe, name ="user-create-recipe"),
     
     path("signup/", SignupPage, name="signup"),
     path("login/", LoginPage, name="login"),
