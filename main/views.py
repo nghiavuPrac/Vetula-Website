@@ -435,7 +435,7 @@ def process_payment(request):
     current_user = request.user.profile
     paypal_dict = {
         'business': settings.PAYPAL_RECEIVER_EMAIL,
-        'amount': 0.01,
+        'amount': 2.00,
         'item_name': '{}-{} Upgrade Vetula Pro'.format(current_user.username,str(current_user.id)),
         'currency_code': 'USD',
         'invoice': '{}-{}'.format(str(current_user.id),request.user.email),
