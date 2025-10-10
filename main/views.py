@@ -28,7 +28,7 @@ class Food_Recipe():
         pass
     def describe(self):
         return " * ".join(self.description)
-    
+
 
 def proccess_data(data):
     try:
@@ -40,30 +40,32 @@ def proccess_data(data):
         total = 0
 
     return results, total
-    
+
 
 def search_with_API(request):
     topic = "Edamam"
     query = request.GET.get("search")
     results = list()
     total = 0
-    if "query" in request.session:
-        #if query in session load data from session 
-        if query in request.session["query"] :
-            data = request.session["data"]
-            results, total = proccess_data(data)
-        else:
-            request.session.flush()
-            data = ed_handler.search_recipe(query)
-            results, total = proccess_data(data)  
-            request.session["query"] = query
-            request.session["data"] = data
-    
-    else:
-        data = ed_handler.search_recipe(query)
+
+    # Check if the query is the same as the one in the session
+    if request.session.get("query") == query and "data" in request.session:
+        data = request.session["data"]
         results, total = proccess_data(data)
-        request.session["query"] = query
-        request.session["data"] = data
+    else:
+        # If query is new or missing, make a new API call
+        if query:
+            try:
+                data = ed_handler.search_recipe(query)
+                results, total = proccess_data(data)
+                # Update the session
+                request.session["query"] = query
+                request.session["data"] = data
+            except Exception:
+                results, total = [], 0
+        else:
+            # Handle case where search is initiated without a query
+            results, total = [], 0
 
     #paginate results
     paginator = Paginator(results, 3)
@@ -92,42 +94,40 @@ def home(request):
     context = {
         "title":"Homepage",
         "total_recipes":total_recipes,
-    }  
-        
+    }
+
     return render(request, "home.html", context)
 
 
 
 def search(request):
-    recipes = Recipe.objects.all()
+    recipes = Recipe.objects.all().order_by('pk')
+    query = request.GET.get("search", "")
 
-    if "search" in request.GET:
-        query = request.GET.get("search")
+    if query:
         queryset = recipes.filter(Q(title__icontains=query))
-    if request.GET.get("breakfast"):
-        results = queryset.filter(Q(topic__title__icontains="breakfast"))
-        topic = "breakfast"
-    elif request.GET.get("appetizers"):
-        results = queryset.filter(Q(topic__title__icontains="appetizers"))
-        topic="appetizers"
-    elif request.GET.get("lunch"):
-        results = queryset.filter(Q(topic__title__icontains="lunch"))
-        topic="lunch"
-    elif request.GET.get("salads"):
-        results = queryset.filter(Q(topic__title__icontains="salads"))
-        topic="salads"
-    elif request.GET.get("dinner"):
-        results = queryset.filter(Q(topic__title__icontains="dinner"))
-        topic="dinner"
-    elif request.GET.get("dessert"):
-        results = queryset.filter(Q(topic__title__icontains="dessert"))
-        topic="dessert"
-    elif request.GET.get("easy"):
-        results = queryset.filter(Q(topic__title__icontains="easy"))
-        topic="easy"
-    elif request.GET.get("hard"):
-        results = queryset.filter(Q(topic__title__icontains="hard"))
-        topic="hard"
+    else:
+        queryset = recipes
+
+    results = queryset
+    topic = ""
+
+    topic_map = {
+        "breakfast": "breakfast",
+        "appetizers": "appetizers",
+        "lunch": "lunch",
+        "salads": "salads",
+        "dinner": "dinner",
+        "dessert": "dessert",
+        "easy": "easy",
+        "hard": "hard"
+    }
+
+    for key, value in topic_map.items():
+        if request.GET.get(key):
+            results = queryset.filter(Q(topic__title__icontains=value))
+            topic = value
+            break  # Process only the first topic found
 
     total = results.count()
 
