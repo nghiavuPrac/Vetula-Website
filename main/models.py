@@ -28,6 +28,6 @@ class Recipe(models.Model):
         return self.title
 
     def get_url(self):
-        return reverse("detail", kwargs={
+        return reverse("main:detail", kwargs={
             "slug":self.slug,
         })
